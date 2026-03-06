@@ -1,0 +1,246 @@
+---
+import Layout from '../layouts/Layout.astro';
+import IconDownload from '../icons/IconDownload.astro';
+import IconWeb from '../icons/IconWeb.astro';
+import IconPlayStore from '../icons/IconPlayStore.astro';
+import IconInstagram from '../icons/IconInstagram.astro';
+import IconEmail from '../icons/IconEmail.astro';
+import IconGithub from '../icons/IconGithub.astro';
+import IconLinkedin from '../icons/IconLinkedin.astro';
+
+const skills = [
+	{
+		title: "Android",
+		description: "En un inicio (2019) empecé desarrollando APPS móviles con Java y el sistema de vistas XML, aprendiendo las APIs del sistema de Google. Luego migre a nuevas tecnologías como Kotlin y Jetpack Compose."
+	},
+	{
+		title: "Kotlin Multiplatform",
+		description: "Esta herramienta me permitió la creación de aplicaciones internas para el manejo de archivos e información para otras aplicaciones en producción."
+	},
+	{
+		title: "Firebase",
+		description: "Empece a utilizar Firestore, Storage y Functions desde 2022. Me permite un rápido inicio en los proyectos sin necesidad de pagar altos costos por bases de datos y alojar de archivos."
+	},
+	{
+		title: "PHP",
+		description: "Conocimiento básico del lenguaje, con manejo de sesiones, importaciones y solicitudes HTTP."
+	},
+	{
+		title: "WEB",
+		description: "Con HTML, CSS y JavaScript, creo sitios WEB, no solo estaticos ya que este conocimiento me sirvio para luego profundizar en librerias como React, y luego utilizarlo en frameworks, algunos como Next.js."
+	}
+];
+---
+
+<Layout title="Desarrollador Android & Web">
+	<div class="min-h-screen bg-background w-dvw flex items-center justify-center flex-col">
+
+		<!-- HEADER -->
+		<header class="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-center flex-col">
+			<div class="container flex h-16 items-center justify-between px-5">
+				<div class="font-bold text-xl">Federico Corzo</div>
+				<nav class="hidden md:flex gap-6">
+					<a href="#about" class="opacity-70 hover:opacity-100 transition-all hover:rotate-2 hover:scale-105">Sobre mí</a>
+					<a href="#projects" class="opacity-70 hover:opacity-100 transition-all hover:rotate-2 hover:scale-105">Proyectos</a>
+					<a href="#contact" class="opacity-70 hover:opacity-100 transition-all hover:rotate-2 hover:scale-105">Contacto</a>
+				</nav>
+			</div>
+		</header>
+
+		<!-- MAIN -->
+		<main class="container py-10 space-y-20 px-5">
+
+		<!-- ABOUT -->
+		<section id="about" class="py-10 md:py-20 flex flex-col md:flex-row gap-10 items-center">
+			<div class="flex-1 space-y-4">
+			<h1 class="text-4xl md:text-6xl font-bold tracking-tight">Desarrollador Android & Web</h1>
+			<p class="text-xl text-muted-foreground">
+				Estudiante de <i title="LCC">Licenciatura en Ciencias de la Computación</i> en la <i title="UNS">Universidad Nacional del Sur</i>
+			</p>
+			<div class="flex gap-4 pt-4">
+				<a href="#projects">
+				<button>
+					Ver proyectos
+				</button>
+				</a>
+				<a href="/cv-federico-corzo.pdf" download="">
+				<button>
+					<IconDownload class="mr-2 h-4 w-4" />
+					Descargar CV
+				</button>
+				</a>
+			</div>
+			</div>
+			<div class="flex-1 flex justify-center">
+			<div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary">
+				<img src="/yo.jpg" alt="Federico Corzo" class="object-cover w-full h-full" />
+			</div>
+			</div>
+		</section>
+
+		<!-- PROJECTS -->
+		<section id="projects" class="space-y-10">
+			<div class="text-center space-y-4">
+			<h2 class="text-3xl md:text-4xl font-bold">Mis proyectos</h2>
+			<p class="text-muted-foreground max-w-2xl mx-auto">
+				Estos son algunos de los proyectos más destacados en los que he trabajado, combinando desarrollo web y móvil.
+			</p>
+			</div>
+
+			<div class="flex flex-wrap [&>div]:w-[350px] gap-8 justify-center">
+
+			<!-- Colectivos Bahia Blanca -->
+			<div class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full">
+				<div class="flex flex-col space-y-1.5 p-6">
+				<div class="w-16 h-16 mb-4">
+					<img src="https://colectivos.corzo.ar/logo.png" alt="Colectivos Bahia Blanca Logo" width="64" height="64" />
+				</div>
+				<h1 class="text-2xl font-semibold leading-none tracking-tight">Colectivos Bahia Blanca</h1>
+				</div>
+				<div class="p-6 pt-0 flex-grow">
+				<div class="flex flex-wrap gap-2 mb-4">
+					{["Android","Kotlin","Jetpack Compose","Firebase","Web","React"].map(tag => (
+					<div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">{tag}</div>
+					))}
+				</div>
+				<p class="text-muted-foreground">
+					Servicio completo para la comunidad que permite a los usuarios consultar horarios, rutas y ubicación en tiempo real de los colectivos de la ciudad. Además de poder planificar viajes con las posibles rutas.
+				</p>
+				</div>
+				<div class="flex items-center p-6 pt-0 flex flex-wrap gap-2">
+				<a href="https://colectivos.corzo.ar" target="_blank" class="flex justify-center">
+					<button>
+					<IconWeb class="mr-2 h-4 w-4" />Sitio Web
+					</button>
+				</a>
+				<a href="https://play.google.com/store/apps/details?id=app.facts.gpsbus" target="_blank" class="flex justify-center">
+					<button>
+					<IconPlayStore class="mr-2 h-4 w-4" />Play Store
+					</button>
+				</a>
+				<a href="https://instagram.com/colectivosbahiablanca" target="_blank" class="flex justify-center">
+					<button>
+					<IconInstagram class="mr-2 h-4 w-4" />@colectivosbahiablanca
+					</button>
+				</a>
+				</div>
+			</div>
+
+			<!-- AudioCuentos -->
+			<div class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full">
+				<div class="flex flex-col space-y-1.5 p-6">
+				<div class="w-16 h-16 mb-4">
+					<img src="https://audiocuentos.corzo.ar/logo.png" alt="AudioCuentos Logo" width="64" height="64" />
+				</div>
+				<h1 class="text-2xl font-semibold leading-none tracking-tight">AudioCuentos</h1>
+				</div>
+				<div class="p-6 pt-0 flex-grow">
+				<div class="flex flex-wrap gap-2 mb-4">
+					{["Android","Kotlin","Firebase","Jetpack Compose"].map(tag => (
+					<div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">{tag}</div>
+					))}
+				</div>
+				<p class="text-muted-foreground">
+					Biblioteca de cuentos infantiles narrados por niños para niños del Hospital Municipal de Bahia Blanca
+				</p>
+				</div>
+				<div class="flex items-center p-6 pt-0">
+				<a href="https://play.google.com/store/apps/details?id=app.facts.audiocuentos" target="_blank" class="flex justify-center">
+					<button>
+					<IconPlayStore class="mr-2 h-4 w-4" />Play Store
+					</button>
+				</a>
+				</div>
+			</div>
+
+			<!-- EcoBahia -->
+			<div class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full">
+				<div class="flex flex-col space-y-1.5 p-6">
+				<div class="w-16 h-16 mb-4">
+					<img src="https://ecobahia.corzo.ar/logo.svg" alt="EcoBahia Logo" width="64" height="64" />
+				</div>
+				<h1 class="text-2xl font-semibold leading-none tracking-tight">EcoBahia</h1>
+				<p class="text-sm text-muted-foreground">
+					Aplicación para promover el reciclaje y cuidado ambiental en Bahía Blanca.
+				</p>
+				</div>
+				<div class="p-6 pt-0 flex-grow">
+				<div class="flex flex-wrap gap-2 mb-4">
+					{["Android","Kotlin","Jetpack Compose","Firebase"].map(tag => (
+					<div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">{tag}</div>
+					))}
+				</div>
+				<p class="text-muted-foreground">
+					Plataforma que conecta a ciudadanos con puntos de reciclaje, eventos ambientales y consejos para una vida más sostenible.
+				</p>
+				</div>
+				<div class="flex items-center p-6 pt-0 flex flex-wrap gap-2">
+				<button>
+					<a href="https://play.google.com/store/apps/details?id=app.facts.ecobahia" target="_blank" class="flex justify-center">
+					<IconPlayStore class="mr-2 h-4 w-4" />Play Store
+					</a>
+				</button>
+				<button>
+					<a href="https://instagram.com/ecobahia_facts" target="_blank" class="flex justify-center">
+					<IconInstagram class="mr-2 h-4 w-4" />@ecobahia_facts
+					</a>
+				</button>
+				</div>
+			</div>
+
+			</div>
+		</section>
+
+		<!-- SKILLS -->
+		<section class="py-10">
+			<div class="text-center space-y-4 mb-10">
+				<h2 class="text-3xl md:text-4xl font-bold">Habilidades</h2>
+				<p class="text-muted-foreground max-w-2xl mx-auto">Tecnologías y herramientas con las que trabajo.</p>
+			</div>
+			<div class="flex gap-6 flex-wrap [&>div]:w-[300px] justify-center">
+				{skills.map(skill => (
+					<div class="flex flex-col items-center p-6 border rounded-lg gap-4">
+						<h3 class="font-bold text-xl text-center">{skill.title}</h3>
+						<p>{skill.description}</p>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<!-- CONTACT -->
+		<section id="contact" class="py-10">
+			<div class="max-w-3xl mx-auto border rounded-lg p-8">
+				<div class="text-center space-y-4 mb-8">
+					<h2 class="text-3xl md:text-4xl font-bold">Contacto</h2>
+					<p class="text-muted-foreground">¿Interesado en trabajar juntos? Contáctame para discutir tu proyecto.</p>
+				</div>
+				<div class="flex flex-col md:flex-row gap-8 items-center justify-center">
+					<a href="mailto:corzofederico95@gmail.com">
+						<button>
+							<IconEmail class="mr-2 h-5 w-5" />corzofederico95@gmail.com
+						</button>
+					</a>
+					<a href="/cv-federico-corzo.pdf" download="">
+						<button>
+							<IconDownload class="mr-2 h-5 w-5" />Descargar CV
+						</button>
+					</a>
+				</div>
+				<div class="flex justify-center gap-4 mt-8">
+					<a href="https://github.com/corzofederico/" target="_blank">
+						<button>
+							<IconGithub class="h-5 w-5" />
+						</button>
+					</a>
+					<a href="https://ar.linkedin.com/in/federico-corzo-ab42a12b3" target="_blank">
+						<button>
+							<IconLinkedin class="h-5 w-5" />
+						</button>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		</main>
+	</div>
+</Layout>
