@@ -426,6 +426,10 @@
 				return {...materia, status }
 			});
 
+			function percentage(num) {
+				return (num * 100).toFixed(2);
+			}
+
 			function calcularPremedio() {
 				const aprobadas = nodes.filter(n => n.status === "aprobada" && Number.isSafeInteger(n.nota));
 				const carreraCursada = cursadas.length / materias.length;
@@ -443,8 +447,8 @@
 				statsEl.innerHTML = `
 					<span class="stat-card"><span class="stat-value">${aprobadas ? promedio.toFixed(2) : "-"}</span><span class="stat-label">Promedio actual</span></span>
 					<span class="stat-card"><span class="stat-value">${aprobadas}</span><span class="stat-label">materias aprobadas con nota</span></span>
-					<span class="stat-card"><span class="stat-value">${carreraCursada}%</span><span class="stat-label">Carrera cursada</span></span>
-					<span class="stat-card"><span class="stat-value">${carreraAprobada}%</span><span class="stat-label">Carrera aprobada</span></span>
+					<span class="stat-card"><span class="stat-value">${percentage(carreraCursada)}%</span><span class="stat-label">Carrera cursada</span></span>
+					<span class="stat-card"><span class="stat-value">${percentage(carreraAprobada)}%</span><span class="stat-label">Carrera aprobada</span></span>
 				`;
 			}
 
