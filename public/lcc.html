@@ -431,10 +431,10 @@
 				const carreraCursada = cursadas.length / materias.length;
 				const carreraAprobada = aprobadas.length / materias.length;
 				
-				if (aprobadasConNota.length === 0) return { promedio: 0, aprobadas: 0, carreraCursada, carreraAprobada };
+				if (aprobadas.length === 0) return { promedio: 0, aprobadas: 0, carreraCursada, carreraAprobada };
 				
-				const suma = aprobadasConNota.reduce((acc, n) => acc + n.nota, 0);
-				return { promedio: suma / aprobadasConNota.length, aprobadas: aprobadas.length, carreraCursada, carreraAprobada };
+				const suma = aprobadas.reduce((acc, n) => acc + n.nota, 0);
+				return { promedio: suma / aprobadas.length, aprobadas: aprobadas.length, carreraCursada, carreraAprobada };
 			}
 
 			const statsEl = document.getElementById("stats");
