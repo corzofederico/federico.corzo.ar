@@ -1,0 +1,757 @@
+<html lang="es">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Grafo de correlativas - Lic. en Ciencias de la Computación</title>
+		<style>
+			:root {
+				--page: #f6f7f4;
+				--surface: #ffffff;
+				--ink: #20242a;
+				--muted: #66707a;
+				--line: #d9dee5;
+				--approved: #2f9e44;
+				--taken: #e6a313;
+				--available: #1971c2;
+				--locked: #25282c;
+				--failed: #e03131;
+				--approved-bg: #e7f5ec;
+				--taken-bg: #fff6dc;
+				--available-bg: #e8f2fd;
+				--locked-bg: #eff1f3;
+				--failed-bg: #ffe3e3;
+				--shadow: 0 16px 45px rgba(30, 38, 47, 0.08);
+			}
+
+			* { box-sizing: border-box; }
+
+			body {
+				margin: 0;
+				background: var(--page);
+				color: var(--ink);
+				font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+			}
+
+			.page {
+				max-width: 1280px;
+				margin: 0 auto;
+				padding: 28px 18px 42px;
+			}
+
+			header {
+				display: flex;
+				justify-content: space-between;
+				gap: 18px;
+				align-items: flex-end;
+				margin-bottom: 16px;
+			}
+
+			h1 {
+				margin: 0 0 4px;
+				font-size: clamp(20px, 2.1vw, 30px);
+				line-height: 1.1;
+				letter-spacing: 0;
+			}
+
+			.subtitle {
+				margin: 0;
+				color: var(--muted);
+				font-size: 13px;
+			}
+
+			.legend {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 9px;
+				justify-content: flex-end;
+				max-width: 610px;
+			}
+
+			.legend-item {
+				display: inline-flex;
+				align-items: center;
+				gap: 7px;
+				min-height: 30px;
+				padding: 5px 9px;
+				border: 1px solid var(--line);
+				border-radius: 8px;
+				background: rgba(255, 255, 255, 0.75);
+				color: var(--muted);
+				font-size: 12px;
+				white-space: nowrap;
+			}
+
+			.swatch {
+				width: 12px;
+				height: 12px;
+				border-radius: 3px;
+				border: 2px solid currentColor;
+			}
+
+			.stats {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 9px;
+				margin-bottom: 16px;
+			}
+
+			.stat-card {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 7px;
+				padding: 7px 12px;
+				border: 1px solid var(--line);
+				border-radius: 8px;
+				background: var(--surface);
+				box-shadow: var(--shadow);
+			}
+
+			.stat-value {
+				font-size: 18px;
+				font-weight: 800;
+				color: var(--ink);
+			}
+
+			.stat-label {
+				font-size: 11.5px;
+				color: var(--muted);
+			}
+
+			.approved { color: var(--approved); }
+			.taken { color: var(--taken); }
+			.available { color: var(--available); }
+			.locked { color: var(--locked); }
+			.failed { color: var(--failed); }
+
+			.toolbar {
+				display: flex;
+				justify-content: space-between;
+				gap: 12px;
+				align-items: center;
+				margin: 8px 0;
+				color: var(--muted);
+				font-size: 12px;
+			}
+
+			button {
+				border: 1px solid var(--line);
+				border-radius: 8px;
+				background: var(--surface);
+				color: var(--ink);
+				min-height: 34px;
+				padding: 0 12px;
+				font: inherit;
+				cursor: pointer;
+			}
+
+			button:hover { border-color: #9aa4af; }
+
+			.diagram-shell {
+				overflow-x: auto;
+				background: var(--surface);
+				border: 1px solid var(--line);
+				border-radius: 8px;
+				box-shadow: var(--shadow);
+			}
+
+			#graph {
+				position: relative;
+				min-width: 1220px;
+				padding: 14px 28px 16px 16px;
+			}
+
+			#edges {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				overflow: visible;
+				pointer-events: none;
+			}
+
+			.row {
+				position: relative;
+				z-index: 1;
+				display: grid;
+				grid-template-columns: 150px 1fr;
+				gap: 22px;
+				align-items: center;
+				min-height: 132px;
+				border-top: 1px dashed var(--line);
+			}
+
+			.row:first-of-type { border-top: 0; }
+
+			.row-label {
+				color: var(--muted);
+				font-size: 11px;
+				line-height: 1.35;
+				font-weight: 750;
+				text-transform: uppercase;
+				letter-spacing: 0.04em;
+			}
+
+			.row-nodes {
+				display: grid;
+				grid-template-columns: repeat(5, 160px);
+				justify-content: center;
+				align-items: center;
+				column-gap: 54px;
+				padding: 30px 0;
+			}
+
+			.node {
+				display: inline-flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				width: 160px;
+				min-height: 50px;
+				gap: 3px;
+				border: 1px solid;
+				border-radius: 8px;
+				padding: 15px;
+				text-align: center;
+				background: var(--node-bg);
+				color: var(--node-color);
+				cursor: pointer;
+				transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+			}
+
+			.node:hover,
+			.node.active {
+				transform: translateY(-1px);
+				box-shadow: 0 9px 20px rgba(24, 31, 39, 0.13);
+			}
+
+			.node.dim { opacity: 0.22; }
+
+			.code {
+				font-size: 18px;
+				line-height: 1;
+				font-weight: 800;
+			}
+
+			.name {
+				font-size: 11px;
+				line-height: 1.18;
+				color: color-mix(in srgb, var(--node-color) 84%, #222);
+			}
+
+			.nota {
+				margin-top: 2px;
+				font-size: 14px;
+				line-height: 1.18;
+				font-weight: 600;
+				color: var(--node-color);
+			}
+
+			.extra {
+				margin-top: 2px;
+				font-size: 10px;
+				line-height: 1.18;
+				font-weight: 600;
+				color: var(--node-color);
+			}
+			
+			.st-aprobada {
+				--node-bg: var(--approved-bg);
+				--node-color: var(--approved);
+				border-color: var(--approved);
+			}
+
+			.st-cursada {
+				--node-bg: var(--taken-bg);
+				--node-color: var(--taken);
+				border-color: var(--taken);
+			}
+			
+			.st-desaprobada {
+				--node-bg: var(--failed-bg);
+				--node-color: var(--failed);
+				border-color: var(--failed);
+			}
+
+			.st-puede {
+				--node-bg: var(--available-bg);
+				--node-color: var(--available);
+				border-color: var(--available);
+			}
+
+			.st-no {
+				--node-bg: var(--locked-bg);
+				--node-color: var(--locked);
+				border-color: var(--locked);
+			}
+
+			@media (max-width: 760px) {
+				.page { padding: 18px 10px 28px; }
+				header { display: block; }
+				.legend { justify-content: flex-start; margin-top: 12px; }
+				.toolbar { display: block; }
+				.toolbar button { margin-top: 8px; }
+				#graph { min-width: 1060px; padding-right: 20px; }
+				.row { grid-template-columns: 118px 1fr; gap: 10px; }
+				.row-nodes { grid-template-columns: repeat(5, 140px); column-gap: 42px; }
+				.node { width: 140px; }
+			}
+		</style>
+	</head>
+	<body>
+		<main class="page">
+			<header>
+				<div>
+					<h1>Grafo dirigido de correlativas</h1>
+					<p class="subtitle">Licenciatura en Ciencias de la Computación · Plan 2012 · solo correlativas para cursada</p>
+				</div>
+				<div class="legend" aria-label="Referencias">
+					<span class="legend-item approved"><span class="swatch"></span>Aprobada</span>
+					<span class="legend-item failed"><span class="swatch"></span>Desaprobada</span>
+					<span class="legend-item taken"><span class="swatch"></span>Cursada</span>
+					<span class="legend-item available"><span class="swatch"></span>Puede cursarse</span>
+					<span class="legend-item locked"><span class="swatch"></span>Todavía no</span>
+				</div>
+			</header>
+			<div class="stats" id="stats" aria-live="polite"></div>
+			<section class="diagram-shell" aria-label="Diagrama de correlatividades">
+				<div id="graph"><svg id="edges" aria-hidden="true" width="1242" height="1495"></svg></div>
+			</section>
+		</main>
+		<script>
+			const rows = [
+				{ id: 0, label: "1° año\n1° cuatrimestre" },
+				{ id: 1, label: "1° año\n2° cuatrimestre" },
+				{ id: 2, label: "2° año\n1° cuatrimestre" },
+				{ id: 3, label: "2° año\n2° cuatrimestre" },
+				{ id: 4, label: "3° año\n1° cuatrimestre" },
+				{ id: 5, label: "3° año\n2° cuatrimestre" },
+				{ id: 6, label: "4° año\n1° cuatrimestre" },
+				{ id: 7, label: "4° año\n2° cuatrimestre" },
+				{ id: 8, label: "5° año\n1° cuatrimestre" },
+				{ id: 9, label: "5° año\n2° cuatrimestre" }
+			];
+
+			const cursadas = [
+				"RPA",
+				"ALGEBRA",
+				"AM1",
+				"IPOO",
+				"LFyA",
+				"ESTRUCTURAS",
+				"TdC",
+				"TdP",
+				"ORGA",
+				"LCC",
+				"AyDS",
+				"ARQUI",
+				"MECC",
+			]
+			const materias = [
+				{ id: "RPA", name: "Resolución de Problemas y Algoritmos", row: 0, col: 2, nota: 8 },
+				{ id: "ALGEBRA", name: "Elementos de Álgebra y de Geometría", row: 0, col: 3, nota: 7 },
+				{ id: "AM1", name: "Análisis Matemático I", row: 1, col: 1 },
+				{ id: "IPOO", name: "Introducción a la Prog. Orientada a Objetos", row: 1, col: 2, nota: 8 },
+				{ id: "LFyA", name: "Lenguajes Formales y Autómatas", row: 1, col: 3, nota: 6 },
+				{ id: "ESTRUCTURAS", name: "Estructuras de Datos", row: 2, col: 2, nota: 8 },
+				{ id: "TdC", name: "Teoría de la Computabilidad", row: 2, col: 3, nota: 5 },
+				{ id: "AM2", name: "Análisis Matemático II", row: 5, col: 1 },
+				{ id: "TdP", name: "Tecnología de Programación", row: 3, col: 2, nota: 7 },
+				{ id: "ORGA", name: "Organización de Computadoras", row: 3, col: 4, nota: 8 },
+				{ id: "LCC", name: "Lógica para Ciencias de la Computación", row: 4, col: 3, nota: 9 },
+				{ id: "AyDS", name: "Análisis y Diseño de Sistemas", row: 4, col: 2 },
+				{ id: "ARQUI", name: "Arquitectura de Computadoras", row: 4, col: 4 },
+				{ id: "MCC", name: "Métodos de Computación Científica", row: 6, col: 1 },
+				{ id: "MECC", name: "Modelos Estadísticos para CS", row: 2, col: 1, nota: 6 },
+				{ id: "OPERATIVOS", name: "Sistemas Operativos y Distribuidos", row: 5, col: 4 },
+				{ id: "BD", name: "Bases de Datos", row: 5, col: 2 },
+				{ id: "LP", name: "Lenguajes de Programación", row: 6, col: 5 },
+				{ id: "DDS", name: "Diseño y Desarrollo de Software", row: 6, col: 2 },
+				{ id: "REDES", name: "Redes de Computadoras", row: 6, col: 4 },
+				{ id: "IA", name: "Inteligencia Artificial", row: 7, col: 3 },
+				{ id: "PROYECTOS", name: "Administración de Proyectos de Software", row: 7, col: 2 },
+				{ id: "CI", name: "Compiladores e Intérpretes", row: 7, col: 5 },
+				{ id: "AyC", name: "Algoritmos y Complejidad", row: 8, col: 1 },
+				{ id: "WEB", name: "Ingeniería de Aplicaciones Web", row: 8, col: 3 },
+				{ id: "TESIS", name: "Tesis de Licenciatura", row: 9, col: 4, extra: "3° año aprobado" }
+			];
+
+			const edges = [
+				["RPA", "IPOO"], ["ALGEBRA", "IPOO"],
+				["RPA", "LFyA"], ["ALGEBRA", "LFyA"],
+				["AM1", "ESTRUCTURAS"], ["IPOO", "ESTRUCTURAS"], ["RPA", "ESTRUCTURAS"],
+				["IPOO", "TdC"], ["LFyA", "TdC"], ["ALGEBRA", "TdC"],
+				["AM1", "AM2"],
+				["ESTRUCTURAS", "TdP"], ["IPOO", "TdP"],
+				["LFyA", "ORGA"], ["ESTRUCTURAS", "ORGA"], ["IPOO", "ORGA"],
+				["TdP", "LCC"], ["TdC", "LCC"],
+				["TdP", "AyDS"], ["ESTRUCTURAS", "AyDS"],
+				["ORGA", "ARQUI"], ["LFyA", "ARQUI"],
+				["AM2", "MCC"], ["LFyA", "MCC"], ["ESTRUCTURAS", "MCC"],
+				["LFyA", "MECC"], ["AM1", "MECC"], ["RPA", "MECC"],
+				["ARQUI", "OPERATIVOS"], ["ORGA", "OPERATIVOS"],
+				["LCC", "BD"], ["AyDS", "BD"],
+				["OPERATIVOS", "LP"], ["BD", "LP"], ["LCC", "LP"],
+				["BD", "DDS"], ["AyDS", "DDS"],
+				["OPERATIVOS", "REDES"],
+				["BD", "IA"], ["LCC", "IA"],
+				["DDS", "PROYECTOS"],
+				["LP", "CI"],
+				["LCC", "AyC"], ["MCC", "AyC"], ["TdP", "AyC"],
+				["DDS", "WEB"], ["REDES", "WEB"], ["BD", "WEB"],
+				["LP", "TESIS"]
+			];
+			function materiaOf(id) {
+				return materias.find(m=> m.id == id) ?? null
+			}
+			function correlativasA(materia) {
+				return edges.filter(([a,b])=> b == materia.id).map(([a,b])=> materiaOf(a)).filter(m=> m != null)
+			}
+			function estaCursada(id) {
+				return cursadas.includes(id);
+			}
+
+			const nodes = materias.map(materia=> {
+				const correlativas = correlativasA(materia)
+				let status;
+				if (estaCursada(materia.id)) {
+					// Lógica actualizada para "desaprobada"
+					if (typeof materia.nota === "number") {
+						status = materia.nota >= 4 ? "aprobada" : "desaprobada";
+					} else {
+						status = "cursada"; 
+					}
+				} else {
+					status = correlativas.every(m=> estaCursada(m.id)) ? "puede" : "no";
+				}
+				return {...materia, status }
+			});
+
+			function calcularPremedio() {
+				const aprobadasConNota = nodes.filter(n => n.status === "aprobada" && Number.isSafeInteger(n.nota));
+				if (aprobadasConNota.length === 0) return { promedio: 0, cantidad: 0 };
+				const suma = aprobadasConNota.reduce((acc, n) => acc + n.nota, 0);
+				return { promedio: suma / aprobadasConNota.length, cantidad: aprobadasConNota.length };
+			}
+
+			const statsEl = document.getElementById("stats");
+			if (statsEl) {
+				const { promedio, cantidad } = calcularPremedio();
+				statsEl.innerHTML = `
+					<span class="stat-card"><span class="stat-value">${cantidad ? promedio.toFixed(2) : "-"}</span><span class="stat-label">Promedio actual</span></span>
+					<span class="stat-card"><span class="stat-value">${cantidad}</span><span class="stat-label">materias aprobadas con nota</span></span>
+				`;
+			}
+
+			const colors = {
+				aprobada: "#2f9e44",
+				cursada: "#e6a313",
+				desaprobada: "#e03131",
+				puede: "#1971c2",
+				no: "#25282c"
+			};
+
+			const graph = document.getElementById("graph");
+			const svg = document.getElementById("edges");
+			const byId = Object.fromEntries(nodes.map(node => [node.id, node]));
+			const svgNS = "http://www.w3.org/2000/svg";
+			const visibleEdges = reduceTransitiveEdges(edges.filter(([from, to]) => byId[from] && byId[to]));
+			let renderedEdges = [];
+			let pinned = null;
+
+			function reduceTransitiveEdges(edgeList) {
+				const adjacency = new Map();
+				edgeList.forEach(([from, to]) => {
+					if (!adjacency.has(from)) adjacency.set(from, []);
+					adjacency.get(from).push(to);
+				});
+
+				function hasAlternatePath(from, to, skippedIndex) {
+					const stack = [];
+					(adjacency.get(from) || []).forEach(next => {
+						const isSkippedEdge = edgeList[skippedIndex][0] === from && edgeList[skippedIndex][1] === next;
+						if (!isSkippedEdge) stack.push(next);
+					});
+
+					const seen = new Set([from]);
+					while (stack.length) {
+						const current = stack.pop();
+						if (current === to) return true;
+						if (seen.has(current)) continue;
+						seen.add(current);
+						(adjacency.get(current) || []).forEach(next => stack.push(next));
+					}
+
+					return false;
+				}
+
+				return edgeList.filter(([from, to], index) => !hasAlternatePath(from, to, index));
+			}
+
+			rows.forEach(rowInfo => {
+				const row = document.createElement("div");
+				row.className = "row";
+
+				const label = document.createElement("div");
+				label.className = "row-label";
+				label.innerHTML = rowInfo.label.split("\n").join("<br>");
+				row.append(label);
+
+				const rowNodes = document.createElement("div");
+				rowNodes.className = "row-nodes";
+
+				nodes.filter(node => node.row === rowInfo.id).forEach(node => {
+					const box = document.createElement("button");
+					box.type = "button";
+					box.className = `node st-${node.status}`;
+					box.id = `node-${node.id}`;
+					box.style.gridColumn = node.col;
+					box.setAttribute("aria-label", `${node.id}: ${node.name}`);
+					
+					// Se descomentó el bloque de 'name' y se agregó lógica para mostrar la nota
+					box.innerHTML = `
+					<span class="code">${node.id}</span>
+					${typeof node.nota === "number" ? `<span class="nota">${node.nota}</span>` : ""}
+					`;
+					//<span class="name">${node.name}</span>
+					//${node.extra ? `<span class="extra" style="font-weight:normal">${node.extra}</span>` : ""}
+
+					box.addEventListener("mouseenter", () => { if (!pinned) highlight(node.id); });
+					box.addEventListener("mouseleave", () => { if (!pinned) clearHighlight(); });
+					box.addEventListener("click", () => {
+					pinned = pinned === node.id ? null : node.id;
+					pinned ? highlight(node.id) : clearHighlight();
+					});
+					rowNodes.append(box);
+				});
+
+				row.append(rowNodes);
+				graph.append(row);
+			});
+			graph.prepend(svg);
+
+			function rowDistance(from, to) {
+				return byId[to].row - byId[from].row;
+			}
+
+			function makeSvgEl(tag, attrs = {}) {
+				const el = document.createElementNS(svgNS, tag);
+				Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+				return el;
+			}
+
+			function localRect(el, graphRect) {
+				const rect = el.getBoundingClientRect();
+				return {
+					left: rect.left - graphRect.left,
+					right: rect.right - graphRect.left,
+					top: rect.top - graphRect.top,
+					bottom: rect.bottom - graphRect.top,
+					width: rect.width,
+					height: rect.height
+				};
+			}
+
+			function roundedPath(points, radius = 8) {
+				if (points.length < 2) return "";
+
+				const commands = [`M ${points[0].x} ${points[0].y}`];
+
+				for (let i = 1; i < points.length - 1; i += 1) {
+					const previous = points[i - 1];
+					const current = points[i];
+					const next = points[i + 1];
+					const before = Math.min(radius, Math.hypot(current.x - previous.x, current.y - previous.y) / 2);
+					const after = Math.min(radius, Math.hypot(next.x - current.x, next.y - current.y) / 2);
+
+					if ((previous.x === current.x && current.y === next.y) || (previous.y === current.y && current.x === next.x)) {
+					const inPoint = {
+						x: current.x + Math.sign(previous.x - current.x) * before,
+						y: current.y + Math.sign(previous.y - current.y) * before
+					};
+					const outPoint = {
+						x: current.x + Math.sign(next.x - current.x) * after,
+						y: current.y + Math.sign(next.y - current.y) * after
+					};
+					commands.push(`L ${inPoint.x} ${inPoint.y}`);
+					commands.push(`Q ${current.x} ${current.y} ${outPoint.x} ${outPoint.y}`);
+					} else {
+					commands.push(`L ${current.x} ${current.y}`);
+					}
+				}
+
+				const last = points[points.length - 1];
+				commands.push(`L ${last.x} ${last.y}`);
+				return commands.join(" ");
+			}
+
+			function hasIntermediateNodeInColumn(from, to) {
+				const fromNode = byId[from];
+				const toNode = byId[to];
+				const topRow = Math.min(fromNode.row, toNode.row);
+				const bottomRow = Math.max(fromNode.row, toNode.row);
+
+				return nodes.some(node =>
+					node.id !== from &&
+					node.id !== to &&
+					node.col === fromNode.col &&
+					node.row > topRow &&
+					node.row < bottomRow
+				);
+			}
+
+			function drawEdges() {
+				svg.innerHTML = "";
+				renderedEdges = [];
+
+				const graphRect = graph.getBoundingClientRect();
+				const rowsEls = [...document.querySelectorAll(".row")];
+				const firstRowNodes = rowsEls[0].querySelector(".row-nodes");
+				const gridRect = localRect(firstRowNodes, graphRect);
+				const sampleNodes = nodes
+					.map(node => ({
+						col: node.col,
+						rect: localRect(document.getElementById(`node-${node.id}`), graphRect)
+					}))
+					.sort((a, b) => a.col - b.col)
+					.reduce((unique, item) => {
+						if (!unique.some(saved => saved.col === item.col)) unique.push(item);
+						return unique;
+					}, [])
+					.map(item => item.rect)
+					.sort((a, b) => a.left - b.left);
+				const internalLanes = [];
+
+				for (let i = 0; i < sampleNodes.length - 1; i += 1) {
+					internalLanes.push((sampleNodes[i].right + sampleNodes[i + 1].left) / 2);
+				}
+
+				if (internalLanes.length === 0) {
+					const laneWidth = gridRect.width / 5;
+					for (let i = 1; i < 5; i += 1) internalLanes.push(gridRect.left + laneWidth * i);
+				}
+
+				const defs = makeSvgEl("defs");
+				Object.values(byId).forEach(node => {
+					const marker = makeSvgEl("marker", {
+					id: `arrow-from-${node.id}`,
+					viewBox: "0 0 10 10",
+					refX: "8",
+					refY: "5",
+					markerWidth: "6",
+					markerHeight: "6",
+					orient: "auto"
+					});
+					marker.append(makeSvgEl("path", {
+					d: "M1 1 L8 5 L1 9",
+					fill: "none",
+					stroke: colors[node.status],
+					"stroke-width": "1.8",
+					"stroke-linecap": "round",
+					"stroke-linejoin": "round"
+					}));
+					defs.append(marker);
+				});
+				svg.append(defs);
+
+				visibleEdges.forEach(([from, to], index) => {
+					const source = document.getElementById(`node-${from}`);
+					const target = document.getElementById(`node-${to}`);
+					if (!source || !target) return;
+
+					const sourceRect = localRect(source, graphRect);
+					const targetRect = localRect(target, graphRect);
+					const sourceRow = localRect(source.closest(".row"), graphRect);
+					const targetRow = localRect(target.closest(".row"), graphRect);
+					const sx = sourceRect.left + sourceRect.width / 2;
+					const sy = sourceRect.bottom;
+					const tx = targetRect.left + targetRect.width / 2;
+					const ty = targetRect.top;
+					const fromCol = byId[from].col;
+					const toCol = byId[to].col;
+					let pathData;
+
+					if (fromCol === toCol && !hasIntermediateNodeInColumn(from, to)) {
+					pathData = `M ${sx} ${sy} L ${tx} ${ty}`;
+					} else {
+					const preferredLane = Math.max(0, Math.min(internalLanes.length - 1, Math.floor((fromCol + toCol - 2) / 2)));
+					const laneOffset = ((index % 5) - 2) * 3;
+					const laneX = internalLanes[preferredLane] + laneOffset;
+					
+					// Lógica de ruteo actualizada: baja, se mueve al canal, baja por el canal hasta el destino y entra verticalmente
+					const startY = sy + 14 + (index % 3) * 4;
+					const endY = ty - 14 - (index % 3) * 4;
+
+					pathData = roundedPath([
+						{ x: sx, y: sy },
+						{ x: sx, y: startY },
+						{ x: laneX, y: startY },
+						{ x: laneX, y: endY },
+						{ x: tx, y: endY },
+						{ x: tx, y: ty }
+					]);
+					}
+
+					const status = byId[from].status
+					
+					const path = makeSvgEl("path", {
+						d: pathData,
+						fill: "none",
+						stroke: colors[status],
+						"stroke-width": "1.35",
+						opacity: "0.6",
+						"marker-end": `url(#arrow-from-${from})`
+					});
+					path.dataset.from = from;
+					path.dataset.to = to;
+					svg.append(path);
+					renderedEdges.push(path);
+				});
+
+				svg.setAttribute("width", graphRect.width);
+				svg.setAttribute("height", graph.scrollHeight);
+			}
+
+			function highlight(id) {
+				const connected = new Set([id]);
+
+				renderedEdges.forEach(path => {
+					if (path.dataset.from === id) connected.add(path.dataset.to);
+					if (path.dataset.to === id) connected.add(path.dataset.from);
+				});
+
+				nodes.forEach(node => {
+					const el = document.getElementById(`node-${node.id}`);
+					el.classList.toggle("active", connected.has(node.id));
+					el.classList.toggle("dim", !connected.has(node.id));
+				});
+
+				renderedEdges.forEach(path => {
+					const active = path.dataset.from === id || path.dataset.to === id;
+					path.setAttribute("opacity", active ? "0.96" : "0.06");
+					path.setAttribute("stroke-width", active ? "2.4" : "1.1");
+				});
+			}
+
+			function clearHighlight() {
+				nodes.forEach(node => {
+					const el = document.getElementById(`node-${node.id}`);
+					el.classList.remove("active", "dim");
+				});
+
+				renderedEdges.forEach(path => {
+					path.setAttribute("opacity", "0.58");
+					path.setAttribute("stroke-width", "1.45");
+				});
+			}
+
+			let timer = 0;
+			window.addEventListener("resize", () => {
+				window.clearTimeout(timer);
+				timer = window.setTimeout(drawEdges, 120);
+			});
+
+			window.addEventListener("load", () => window.setTimeout(drawEdges, 60));
+			window.setTimeout(drawEdges, 180);
+		</script>
+	</body>
+</html>
