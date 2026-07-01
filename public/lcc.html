@@ -427,18 +427,24 @@
 			});
 
 			function calcularPremedio() {
-				const aprobadasConNota = nodes.filter(n => n.status === "aprobada" && Number.isSafeInteger(n.nota));
-				if (aprobadasConNota.length === 0) return { promedio: 0, cantidad: 0 };
+				const aprobadas = nodes.filter(n => n.status === "aprobada" && Number.isSafeInteger(n.nota));
+				const carreraCursada = cursadas.length / materias.length;
+				const carreraAprobada = aprobadas.length / materias.length;
+				
+				if (aprobadasConNota.length === 0) return { promedio: 0, aprobadas: 0, carreraCursada, carreraAprobada };
+				
 				const suma = aprobadasConNota.reduce((acc, n) => acc + n.nota, 0);
-				return { promedio: suma / aprobadasConNota.length, cantidad: aprobadasConNota.length };
+				return { promedio: suma / aprobadasConNota.length, aprobadas: aprobadas.length, carreraCursada, carreraAprobada };
 			}
 
 			const statsEl = document.getElementById("stats");
 			if (statsEl) {
-				const { promedio, cantidad } = calcularPremedio();
+				const { promedio, aprobadas, carreraAprobada, carreraCursada } = calcularPremedio();
 				statsEl.innerHTML = `
-					<span class="stat-card"><span class="stat-value">${cantidad ? promedio.toFixed(2) : "-"}</span><span class="stat-label">Promedio actual</span></span>
-					<span class="stat-card"><span class="stat-value">${cantidad}</span><span class="stat-label">materias aprobadas con nota</span></span>
+					<span class="stat-card"><span class="stat-value">${aprobadas ? promedio.toFixed(2) : "-"}</span><span class="stat-label">Promedio actual</span></span>
+					<span class="stat-card"><span class="stat-value">${aprobadas}</span><span class="stat-label">materias aprobadas con nota</span></span>
+					<span class="stat-card"><span class="stat-value">${carreraCursada}%</span><span class="stat-label">Carrera cursada</span></span>
+					<span class="stat-card"><span class="stat-value">${carreraAprobada}%</span><span class="stat-label">Carrera aprobada</span></span>
 				`;
 			}
 
