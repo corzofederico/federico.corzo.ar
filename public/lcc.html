@@ -496,7 +496,21 @@
 
 				return edgeList.filter(([from, to], index) => !hasAlternatePath(from, to, index));
 			}
-
+			
+			function promediosDeFila(rowId) {
+				const aprobadasFila = nodes.filter(n => n.row === rowId && n.status === "aprobada" && typeof n.nota === "number");
+				const cuatrimestre = aprobadasFila.length
+					? aprobadasFila.reduce((acc, n) => acc + n.nota, 0) / aprobadasFila.length
+					: null;
+			
+				const aprobadasHastaAqui = nodes.filter(n => n.row <= rowId && n.status === "aprobada" && typeof n.nota === "number");
+				const acumulado = aprobadasHastaAqui.length
+					? aprobadasHastaAqui.reduce((acc, n) => acc + n.nota, 0) / aprobadasHastaAqui.length
+					: null;
+			
+				return { cuatrimestre, acumulado };
+			}
+			
 			rows.forEach(rowInfo => {
 				const row = document.createElement("div");
 				row.className = "row";
@@ -504,6 +518,21 @@
 				const label = document.createElement("div");
 				label.className = "row-label";
 				label.innerHTML = rowInfo.label.split("\n").join("<br>");
+
+				const { cuatrimestre, acumulado } = promediosDeFila(rowInfo.id);
+				if (cuatrimestre !== null) {
+					const el = document.createElement("div");
+					el.className = "row-promedio";
+					el.innerHTML = `<span class="value">${cuatrimestre.toFixed(2)}</span><span class="label">cuatrimestre</span>`;
+					label.append(el);
+				}
+				if (acumulado !== null) {
+					const el = document.createElement("div");
+					el.className = "row-promedio";
+					el.innerHTML = `<span class="value">${acumulado.toFixed(2)}</span><span class="label">acumulado</span>`;
+					label.append(el);
+				}
+				
 				row.append(label);
 
 				const rowNodes = document.createElement("div");
