@@ -11,23 +11,27 @@ import IconLinkedin from '../icons/IconLinkedin.astro';
 const skills = [
 	{
 		title: "Android",
-		description: "En un inicio (2019) empecé desarrollando APPS móviles con Java y el sistema de vistas XML, aprendiendo las APIs del sistema de Google. Luego migre a nuevas tecnologías como Kotlin y Jetpack Compose."
+		description: "En 2019 comencé a desarrollar aplicaciones móviles con Java y el sistema de vistas XML, aprendiendo a utilizar las APIs de Android. Luego migré a nuevas tecnologías como Kotlin y Jetpack Compose."
 	},
 	{
 		title: "Kotlin Multiplatform",
-		description: "Esta herramienta me permitió la creación de aplicaciones internas para el manejo de archivos e información para otras aplicaciones en producción."
+		description: "Esta tecnología me permitió desarrollar aplicaciones internas para la gestión de archivos e información utilizada por otras aplicaciones en producción."
 	},
 	{
 		title: "Firebase",
-		description: "Empece a utilizar Firestore, Storage y Functions desde 2022. Me permite un rápido inicio en los proyectos sin necesidad de pagar altos costos por bases de datos y alojar de archivos."
+		description: "Comencé a utilizar Firestore, Storage y Functions en 2022. Firebase me permite comenzar rápidamente nuevos proyectos, evitando los altos costos iniciales de infraestructura, bases de datos y almacenamiento de archivos."
 	},
 	{
 		title: "PHP",
-		description: "Conocimiento básico del lenguaje, con manejo de sesiones, importaciones y solicitudes HTTP."
+		description: "Conocimientos básicos del lenguaje, incluyendo manejo de sesiones, importación de archivos y realización de solicitudes HTTP."
 	},
 	{
 		title: "WEB",
-		description: "Con HTML, CSS y JavaScript, creo sitios WEB, no solo estaticos ya que este conocimiento me sirvio para luego profundizar en librerias como React, y luego utilizarlo en frameworks, algunos como Next.js."
+		description: "Con HTML, CSS, JavaScript, React.js, Vite, Astro y otras tecnologías, desarrollo sitios web tanto estáticos como dinámicos. Estos conocimientos me permitieron profundizar posteriormente en librerías como React y utilizarlas en frameworks como Next.js."
+	},
+	{
+		title: "Habilidades blandas",
+		description: "A través de mi participación en diversas actividades, como Infancia Misionera, Scouts, Infinito por Descubrir y Uniendo Metas (simulación de la ONU), desarrollé habilidades de trabajo en equipo, escucha activa, redacción y oratoria, entre otras. Estas experiencias también me ayudaron a mejorar mi capacidad para comunicarme y relacionarme con otras personas."
 	}
 ];
 ---
@@ -99,7 +103,7 @@ const skills = [
 				</div>
 				<div class="p-6 pt-0 flex-grow">
 				<div class="flex flex-wrap gap-2 mb-4">
-					{["Android","Kotlin","Jetpack Compose","Firebase","Web","React"].map(tag => (
+					{["Android","Kotlin","Jetpack Compose","Multiplatform","Web","React","Linux server"].map(tag => (
 					<div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">{tag}</div>
 					))}
 				</div>
@@ -107,7 +111,7 @@ const skills = [
 					Servicio completo para la comunidad que permite a los usuarios consultar horarios, rutas y ubicación en tiempo real de los colectivos de la ciudad. Además de poder planificar viajes con las posibles rutas.
 				</p>
 				</div>
-				<div class="flex items-center p-6 pt-0 flex flex-wrap gap-2">
+				<div class="flex items-center p-6 pt-0 flex-wrap gap-2">
 				<a href="https://colectivos.corzo.ar" target="_blank" class="flex justify-center">
 					<button>
 					<IconWeb class="mr-2 h-4 w-4" />Sitio Web
@@ -118,9 +122,14 @@ const skills = [
 					<IconPlayStore class="mr-2 h-4 w-4" />Play Store
 					</button>
 				</a>
-				<a href="https://instagram.com/colectivosbahiablanca" target="_blank" class="flex justify-center">
+				<a href="https://instagram.com/colectivosya" target="_blank" class="flex justify-center">
 					<button>
-					<IconInstagram class="mr-2 h-4 w-4" />@colectivosbahiablanca
+					<IconInstagram class="mr-2 h-4 w-4" />@colectivosya
+					</button>
+				</a>
+				<a href="https://github.com/corzofederico/gpsbus-web" target="_blank" class="flex justify-center">
+					<button>
+					<IconGithub class="mr-2 h-4 w-4" />Github - WEB
 					</button>
 				</a>
 				</div>
@@ -151,6 +160,7 @@ const skills = [
 					</button>
 				</a>
 				</div>
+				<small>Es probable que luego de tantos años la aplicación deje de estar disponible o funcionar correctamente como fue diseñada en sus inicios.</small>
 			</div>
 
 			<!-- EcoBahia -->
@@ -174,7 +184,7 @@ const skills = [
 					Plataforma que conecta a ciudadanos con puntos de reciclaje, eventos ambientales y consejos para una vida más sostenible.
 				</p>
 				</div>
-				<div class="flex items-center p-6 pt-0 flex flex-wrap gap-2">
+				<div class="flex items-center p-6 pt-0 flex-wrap gap-2">
 				<button>
 					<a href="https://play.google.com/store/apps/details?id=app.facts.ecobahia" target="_blank" class="flex justify-center">
 					<IconPlayStore class="mr-2 h-4 w-4" />Play Store
@@ -186,6 +196,7 @@ const skills = [
 					</a>
 				</button>
 				</div>
+				<small>Es probable que luego de tantos años la aplicación deje de estar disponible o funcionar correctamente como fue diseñada en sus inicios.</small>
 			</div>
 
 			</div>
